@@ -41,5 +41,5 @@ ENCODER_MODEL = "encoder.pkl"
 LABEL_MAP = {0: "NEGATIVE", 2: "NEUTRAL", 4: "POSITIVE"}
 
 # (TODO: MOVE TO ENV FILE) Specify the custom directory where you want to download NLTK data
-CUSTOM_NLTK_DATA_PATH = '/data/sa-lstm-engine/data/nltk_data'
+CUSTOM_NLTK_DATA_PATH = '/app/data/nltk_data'
 

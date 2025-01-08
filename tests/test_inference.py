@@ -2,7 +2,7 @@ import unittest
 from app.inference import decode_sentiment, predict
 from consts.consts import POSITIVE, NEUTRAL, NEGATIVE
 from unittest.mock import patch, MagicMock
-from app.proto.sa_lstm_engine_pb2 import PredictSentimentRequest
+from app.proto.twitter_sentiment_analyzer_pb2 import PredictSentimentRequest
 import numpy as np
 from consts.errors import ValidationError
 
@@ -26,11 +26,12 @@ class TestInference(unittest.TestCase):
             self.assertEqual(score[2], sentiment)
 
     # Test the 'predict' function by mocking necessary components
-    @patch('app.inference.sa_model')
+    @patch('app.inference.sentiment_analyzer_model')
     @patch('app.inference.pad_sequences', new_callable=MagicMock)
-    def test_predict(self, mock_app_inference_pad_sequences, mock_app_inference_sa_model):
+    def test_predict(self, mock_app_inference_pad_sequences, 
+                     mock_app_inference_sentiment_analyzer_model):
         """
-        Test the 'predict' function by mocking the pad_sequences and sa_model components.
+        Test the 'predict' function by mocking the pad_sequences and sentiment_analyzer_model components.
         The mock values simulate the behavior of these components.
         """
         # Define mock behavior for pad_sequences
@@ -46,8 +47,8 @@ class TestInference(unittest.TestCase):
             return [0.7]
         
         # Setup the mocks
-        mock_app_inference_sa_model.tokenizer.texts_to_sequences.side_effect = mock_app_inference_sa_model_tokenizer_texts_to_seq_behavior
-        mock_app_inference_sa_model.model.predict = mock_app_inference_sa_model_model_predict_behavior
+        mock_app_inference_sentiment_analyzer_model.tokenizer.texts_to_sequences.side_effect = mock_app_inference_sa_model_tokenizer_texts_to_seq_behavior
+        mock_app_inference_sentiment_analyzer_model.model.predict = mock_app_inference_sa_model_model_predict_behavior
         mock_app_inference_pad_sequences.side_effect = mock_app_inference_pad_sequences_behavior
 
         # Create a test request with sample text
@@ -59,7 +60,7 @@ class TestInference(unittest.TestCase):
 
     # Test the 'predict' function with additional mocks to ensure all components work as expected
     @patch('app.inference.pad_sequences', new_callable=MagicMock)  # Mock pad sequences
-    @patch('app.inference.sa_model', new_callable=MagicMock)  # Mock tokenizer
+    @patch('app.inference.sentiment_analyzer_model', new_callable=MagicMock)  # Mock tokenizer
     @patch('app.inference.decode_sentiment')  # Mock the decode_sentiment function
     def test_predict_success(self, mock_decode_sentiment, mock_inference_sa_model, mock_inference_pad_sequences):
         """

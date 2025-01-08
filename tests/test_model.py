@@ -1,11 +1,11 @@
 import unittest
 from unittest.mock import patch, mock_open, MagicMock
-from app.model import SAModel
+from app.model import SentimentAnalyzerModel
 from consts.consts import MODEL_PATH, W2V_MODEL_PATH, TOKENIZER_PATH, LABEL_ENCODER_PATH
 import gensim
 from keras.models import Sequential
 
-class TestSAModel(unittest.TestCase):
+class TestSentimentAnalyzerModel(unittest.TestCase):
 
     @patch('builtins.open', new_callable=mock_open)  # Mock open for file reading
     @patch('pickle.load', new_callable=MagicMock)  # Mock pickle.load
@@ -16,10 +16,10 @@ class TestSAModel(unittest.TestCase):
                                 mock_keras_models_load_model,
                                 mock_pickle_load, mocked_open):
         """
-        Test the initialization of SAModel, ensuring models and objects are correctly loaded.
+        Test the initialization of SentimentAnalyzerModel, ensuring models and objects are correctly loaded.
         Mocks the loading of models, tokenizer, and encoder.
         """
-        sa_model = SAModel()
+        sentiment_analyzer_model = SentimentAnalyzerModel()
 
         mock_model = "I'm the trained model"
         mock_keras_models_load_model.return_value = "I'm the trained model"
@@ -45,19 +45,19 @@ class TestSAModel(unittest.TestCase):
         mocked_open.side_effect  = mock_open_side_effect
         mock_pickle_load.side_effect = mock_pickle_load_behavior
 
-        self.assertEqual(sa_model.model, None)  # Ensure model is not loaded initially
-        self.assertEqual(sa_model.w2v_model, None)  # Ensure W2V model is not loaded initially
-        self.assertEqual(sa_model.tokenizer, None)  # Ensure tokenizer is not loaded initially
-        self.assertEqual(sa_model.encoder, None)  # Ensure encoder is not loaded initially
+        self.assertEqual(sentiment_analyzer_model.model, None)  # Ensure model is not loaded initially
+        self.assertEqual(sentiment_analyzer_model.w2v_model, None)  # Ensure W2V model is not loaded initially
+        self.assertEqual(sentiment_analyzer_model.tokenizer, None)  # Ensure tokenizer is not loaded initially
+        self.assertEqual(sentiment_analyzer_model.encoder, None)  # Ensure encoder is not loaded initially
 
         # Initialize models and objects
-        sa_model.initialize_models()
+        sentiment_analyzer_model.initialize_models()
 
         # Check if the models and objects were correctly loaded
-        self.assertEqual(sa_model.model, mock_model)
-        self.assertEqual(sa_model.w2v_model, mock_w2v_model)
-        self.assertEqual(sa_model.tokenizer, "mocked content for tokenizer")
-        self.assertEqual(sa_model.encoder, "mocked content for label encoder")
+        self.assertEqual(sentiment_analyzer_model.model, mock_model)
+        self.assertEqual(sentiment_analyzer_model.w2v_model, mock_w2v_model)
+        self.assertEqual(sentiment_analyzer_model.tokenizer, "mocked content for tokenizer")
+        self.assertEqual(sentiment_analyzer_model.encoder, "mocked content for label encoder")
 
 
     @patch('keras.models.load_model', side_effect=Exception("load model failed"))
@@ -69,26 +69,26 @@ class TestSAModel(unittest.TestCase):
         """
         Test to raise exception on loading trained ML models. This includes checking failures for Word2Vec model as well.
         """
-        sa_model = SAModel()
+        sentiment_analyzer_model = SentimentAnalyzerModel()
 
         with self.assertRaises(Exception) as context1:
-            model = sa_model.load_model()
+            model = sentiment_analyzer_model.load_model()
 
         print(str(context1.exception))
         self.assertEqual(str(context1.exception), "load model failed")
 
         with self.assertRaises(Exception) as context2:
-            w2v_model = sa_model.load_w2v_model()
+            w2v_model = sentiment_analyzer_model.load_w2v_model()
 
         self.assertEqual(str(context2.exception), "load w2v model failed")
 
         with self.assertRaises(Exception) as context3:
-            tokenizer = sa_model.load_tokenizer()
+            tokenizer = sentiment_analyzer_model.load_tokenizer()
 
         self.assertEqual(str(context3.exception), "failed to load with pickle")
 
         with self.assertRaises(Exception) as context4:
-            encoder = sa_model.load_encoder()
+            encoder = sentiment_analyzer_model.load_encoder()
 
         self.assertEqual(str(context4.exception), "failed to load with pickle")
 
@@ -99,22 +99,22 @@ class TestSAModel(unittest.TestCase):
         Test to raise FileNotFoundError on model load functions if the model files do not exist.
         Applicable for Word2Vec model, tokenizer, and label encoder.
         """
-        sa_model = SAModel()
+        sentiment_analyzer_model = SentimentAnalyzerModel()
         
         mock_os_path_exists.return_value = False  # Simulate that the files don't exist
 
         # Test if FileNotFoundError is raised for each model, tokenizer, and encoder
         with self.assertRaises(FileNotFoundError):
-            model = sa_model.load_model()
+            model = sentiment_analyzer_model.load_model()
 
         with self.assertRaises(FileNotFoundError):
-            w2v_model = sa_model.load_w2v_model()
+            w2v_model = sentiment_analyzer_model.load_w2v_model()
 
         with self.assertRaises(FileNotFoundError):
-            tokenizer = sa_model.load_tokenizer()
+            tokenizer = sentiment_analyzer_model.load_tokenizer()
 
         with self.assertRaises(FileNotFoundError):
-            encoder = sa_model.load_encoder()
+            encoder = sentiment_analyzer_model.load_encoder()
     
     @patch('app.model.train_model', new_callable=MagicMock)
     @patch('builtins.open', new_callable=MagicMock)  # Mock 'open' function
@@ -128,7 +128,7 @@ class TestSAModel(unittest.TestCase):
         """
         Test to ensure models and objects are saved properly, including pickling the tokenizer and encoder.
         """
-        sa_model = SAModel()
+        sentiment_analyzer_model = SentimentAnalyzerModel()
 
         def create_model():
             return Sequential()
@@ -147,7 +147,7 @@ class TestSAModel(unittest.TestCase):
         mock_open.return_value = mock_file
 
         # Train the model and persist
-        sa_model.train_and_persist_model()
+        sentiment_analyzer_model.train_and_persist_model()
 
         # Check if the model and W2V model are saved correctly
         mock_keras_seq_model.assert_called_once_with(MODEL_PATH)
@@ -170,37 +170,37 @@ class TestSAModel(unittest.TestCase):
         """
         Test to raise exception during saving models and pickling objects, ensuring exceptions are handled properly.
         """
-        sa_model = SAModel()
-        sa_model.model = Sequential()
+        sentiment_analyzer_model = SentimentAnalyzerModel()
+        sentiment_analyzer_model.model = Sequential()
 
         mock_keras_model_save.side_effect = Exception("Failed to save model")
 
         # Test saving model failure
         with self.assertRaises(Exception) as context1:
-            sa_model.save_model()
+            sentiment_analyzer_model.save_model()
 
         self.assertEqual(str(context1.exception), "Failed to save model")
 
-        sa_model.w2v_model = gensim.models.word2vec.Word2Vec()
+        sentiment_analyzer_model.w2v_model = gensim.models.word2vec.Word2Vec()
 
         # Test saving W2V model failure
         with self.assertRaises(Exception) as context2:
-            sa_model.save_w2v_model()
+            sentiment_analyzer_model.save_w2v_model()
 
         self.assertEqual(str(context2.exception), "Failed to save W2V model file")
 
-        sa_model.tokenizer = MagicMock()
+        sentiment_analyzer_model.tokenizer = MagicMock()
         
         # Test pickling tokenizer failure
         with self.assertRaises(Exception) as context3:
-            sa_model.save_tokenizer()
+            sentiment_analyzer_model.save_tokenizer()
 
         self.assertEqual(str(context3.exception), "Failed to dump file")
 
-        sa_model.encoder = MagicMock()
+        sentiment_analyzer_model.encoder = MagicMock()
         
         # Test pickling encoder failure
         with self.assertRaises(Exception) as context4:
-            sa_model.save_encoder()
+            sentiment_analyzer_model.save_encoder()
 
         self.assertEqual(str(context4.exception), "Failed to dump file")

@@ -6,7 +6,7 @@ from consts.errors import ValidationError
 from . import logger
 
 # Global variable to hold the sentiment analysis model
-sa_model = None
+sentiment_analyzer_model = None
 
 # Initialize the inference model
 def init_inference(model):
@@ -16,8 +16,8 @@ def init_inference(model):
     Args:
         model: The pre-trained sentiment analysis model.
     """
-    global sa_model
-    sa_model = model
+    global sentiment_analyzer_model
+    sentiment_analyzer_model = model
     logger.info("Sentiment analysis model initialized successfully.")
 
 # Decode the sentiment score into a label
@@ -69,11 +69,11 @@ def predict(request, include_neutral=True):
     logger.info(f"Starting inference for request: {request}")
     
     # Tokenize text
-    x_predict = pad_sequences(sa_model.tokenizer.texts_to_sequences([request.text]), maxlen=SEQUENCE_LENGTH)
+    x_predict = pad_sequences(sentiment_analyzer_model.tokenizer.texts_to_sequences([request.text]), maxlen=SEQUENCE_LENGTH)
     logger.info(f"Text tokenized successfully: {request.text}")
 
     # Predict
-    score = sa_model.model.predict([x_predict])[0]
+    score = sentiment_analyzer_model.model.predict([x_predict])[0]
     logger.info(f"Prediction score computed: {float(score)}")
 
     # Decode sentiment

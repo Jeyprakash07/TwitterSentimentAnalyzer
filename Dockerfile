@@ -2,7 +2,7 @@
 FROM python:3.10.16
 
 # Set environment variable for NLTK data directory
-ENV NLTK_DATA=/app/nltk_data
+ENV NLTK_DATA_PATH=/app/nltk_data
 
 # Set the working directory in the container
 WORKDIR /app
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Generate the Python gRPC code from the .proto file
-RUN python -m grpc_tools.protoc -I. --python_out=. --pyi_out=. --grpc_python_out=. ./app/proto/sa_lstm_engine.proto
+RUN python -m grpc_tools.protoc -I. --python_out=. --pyi_out=. --grpc_python_out=. ./app/proto/twitter_sentiment_analyzer.proto
 
 # Expose the gRPC port
 EXPOSE 50051

@@ -1,6 +1,6 @@
 import grpc
-from app.proto.sa_lstm_engine_pb2_grpc import SentimentAnalysisServiceStub
-from app.proto.sa_lstm_engine_pb2 import PredictSentimentRequest
+from app.proto.twitter_sentiment_analyzer_pb2_grpc import SentimentAnalysisServiceStub
+from app.proto.twitter_sentiment_analyzer_pb2 import PredictSentimentRequest
 import time
 import asyncio
 from app import logger

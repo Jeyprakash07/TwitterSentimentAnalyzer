@@ -2,6 +2,7 @@ import re
 from sklearn.base import BaseEstimator, TransformerMixin
 from app import logger
 from consts.consts import TEXT_CLEANING_RE, CUSTOM_NLTK_DATA_PATH
+import os
 
 # nltk
 import nltk
@@ -92,9 +93,9 @@ class TextPreprocessor(BaseEstimator, TransformerMixin):
                 logger.debug(f"NLTK resource '{resource}' is already available.")
             except LookupError:
                 logger.warning(f"NLTK resource '{resource}' not found. Downloading...")
-                nltk.download(resource, download_dir=CUSTOM_NLTK_DATA_PATH)
+                nltk.download(resource)
                 logger.info(f"Downloaded NLTK resource: {resource}")
 
-        # Add custom NLTK data path to ensure it is recognized
-        nltk.data.path.append(CUSTOM_NLTK_DATA_PATH)
-        logger.debug(f"Custom NLTK data path added: {CUSTOM_NLTK_DATA_PATH}")
+        # # Add custom NLTK data path to ensure it is recognized
+        # nltk.data.path.append(CUSTOM_NLTK_DATA_PATH)
+        # logger.debug(f"Custom NLTK data path added: {CUSTOM_NLTK_DATA_PATH}")

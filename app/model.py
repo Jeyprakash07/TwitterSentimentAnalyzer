@@ -7,7 +7,7 @@ import pickle
 import gensim
 import keras
 
-class SAModel():    
+class SentimentAnalyzerModel():    
     def __init__(self):
         self.model = None
         self.w2v_model = None
