@@ -1,0 +1,20 @@
+# Ignore preprocessing assets
+/data/nltk_data
+/data/nltk_data/stopwords.zip
+
+# Ignore trained models and pickling objects
+/models/
+
+/sentiment-analysis-lstm-env
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+.pytest_cache/
+
+# Ignore gRPC generated files
+/app/proto/sa_lstm_engine_pb2.py
+/app/proto/sa_lstm_engine_pb2.pyi
+/app/proto/sa_lstm_engine_pb2_grpc.py

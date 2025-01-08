@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package sentimentanalysisrpc;
+
+// The gRPC service definition
+service SentimentAnalysisService {
+    // Define the Predict method that takes a PredictSentimentRequest and returns a PredictSentimentResponse
+    rpc PredictSentiment(PredictSentimentRequest) returns (PredictSentimentResponse) {}
+}
+
+// The request message containing the input features for prediction
+message PredictSentimentRequest {
+    string id = 1;
+    string date = 2;
+    string flag = 3;
+    string user = 4; 
+    string text = 5;
+}
+
+// The response message containing the model prediction result
+message PredictSentimentResponse {
+    string sentiment = 1;  // "positive", "negative", "neutral"
+}
