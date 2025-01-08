@@ -1,1 +1,1 @@
-# Sentiment analysis LSTM engine
+# Twitter sentiment analyzer built with Keras Sequential LSTM model
